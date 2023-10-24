@@ -4,10 +4,16 @@ import 'package:learningdart/model/todo.dart';
 import 'package:learningdart/widgets/todo_items.dart';
 
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
   Home({Key? key}) : super(key: key);
 
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
   final todoList = ToDO.TodoList();
+  final _todoController = TextEditingController();
 
   @override
   Widget build(BuildContext context){
@@ -38,7 +44,11 @@ class Home extends StatelessWidget {
                         ),
                       ),
                       for (ToDO todoo in todoList)
-                        TodoItem(todo: todoo,),
+                        TodoItem(
+                          todo: todoo,
+                          onTodoChanged: _handleTodoChange,
+                          onDeleteItem: _handleTodoItemDelete,
+                        ),
                      
                   ],),
                 )
@@ -66,6 +76,7 @@ class Home extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: TextField(
+                  controller: _todoController,
                   decoration: InputDecoration(
                     hintText: "Add new todo item",
                     border: InputBorder.none,
@@ -80,7 +91,10 @@ class Home extends StatelessWidget {
                 ),
                 child: ElevatedButton(
                   child: Text("+", style: TextStyle(fontSize: 40, color: Colors.white),),
-                  onPressed: (){},
+                  onPressed: (){
+                    // print("Clicked on add button");
+                    _handleAddNewTodoItem(_todoController.text);
+                  },
                   style: ElevatedButton.styleFrom(
                     primary: tdBlue,
                     minimumSize: Size(60, 60),
@@ -94,6 +108,25 @@ class Home extends StatelessWidget {
       ),
     );
 
+  }
+
+  void _handleTodoChange(ToDO todo) {
+    setState(() {
+      todo.isDone = !todo.isDone;
+    });
+  }
+
+  void _handleTodoItemDelete(String id){
+    setState(() {
+      todoList.removeWhere((item) => item.id == id);
+    });
+  }
+
+  void _handleAddNewTodoItem(String todoText){
+    setState(() {
+      todoList.add(ToDO(id: DateTime.now().microsecondsSinceEpoch.toString(), todoText: todoText));
+    });
+    _todoController.clear(); // Clean text field after add
   }
 
   Widget searchBox(){
