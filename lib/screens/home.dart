@@ -3,7 +3,6 @@ import 'package:learningdart/constants/colors.dart';
 import 'package:learningdart/model/todo.dart';
 import 'package:learningdart/widgets/todo_items.dart';
 
-
 class Home extends StatefulWidget {
   Home({Key? key}) : super(key: key);
 
@@ -23,7 +22,7 @@ class _HomeState extends State<Home> {
   }
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: tdBGColor,
       appBar: _buildAppBar(),
@@ -31,34 +30,33 @@ class _HomeState extends State<Home> {
         children: [
           Container(
             padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-            child: Column(
-              children: [
-                searchBox(),
-                Expanded(
-                  child: ListView(
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(
-                          top: 50,
-                          bottom: 20,
-                        ),
-                        child: Text(
-                          'All ToDos',
-                          style: TextStyle(
-                            fontSize: 30,
-                            fontWeight: FontWeight.w500,  
-                          ),
+            child: Column(children: [
+              searchBox(),
+              Expanded(
+                child: ListView(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(
+                        top: 50,
+                        bottom: 20,
+                      ),
+                      child: Text(
+                        'All ToDos',
+                        style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
-                      for (ToDO todoo in _foundTodo)
-                        TodoItem(
-                          todo: todoo,
-                          onTodoChanged: _handleTodoChange,
-                          onDeleteItem: _handleTodoItemDelete,
-                        ),
-                     
-                  ],),
-                )
+                    ),
+                    for (ToDO todoo in _foundTodo)
+                      TodoItem(
+                        todo: todoo,
+                        onTodoChanged: _handleTodoChange,
+                        onDeleteItem: _handleTodoItemDelete,
+                      ),
+                  ],
+                ),
+              )
             ]),
           ),
           Align(
@@ -67,29 +65,34 @@ class _HomeState extends State<Home> {
               Expanded(
                 child: Container(
                   margin: EdgeInsets.only(
-                  bottom: 20, 
-                  right: 20, 
-                  left: 20,
-                ),
-                padding: EdgeInsets.symmetric(horizontal: 20,vertical: 5,),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: const [BoxShadow(
-                    color: Colors.grey, 
-                    offset: Offset(0.0, 0.0),
-                    blurRadius: 10.0,
-                    spreadRadius: 0.0,
-                  ),],
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: TextField(
-                  controller: _todoController,
-                  decoration: InputDecoration(
-                    hintText: "Add new todo item",
-                    border: InputBorder.none,
+                    bottom: 20,
+                    right: 20,
+                    left: 20,
+                  ),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 5,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.grey,
+                        offset: Offset(0.0, 0.0),
+                        blurRadius: 10.0,
+                        spreadRadius: 0.0,
+                      ),
+                    ],
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: TextField(
+                    controller: _todoController,
+                    decoration: InputDecoration(
+                      hintText: "Add new todo item",
+                      border: InputBorder.none,
+                    ),
                   ),
                 ),
-              ),
               ),
               Container(
                 margin: EdgeInsets.only(
@@ -97,8 +100,11 @@ class _HomeState extends State<Home> {
                   right: 20,
                 ),
                 child: ElevatedButton(
-                  child: Text("+", style: TextStyle(fontSize: 40, color: Colors.white),),
-                  onPressed: (){
+                  child: Text(
+                    "+",
+                    style: TextStyle(fontSize: 40, color: Colors.white),
+                  ),
+                  onPressed: () {
                     // print("Clicked on add button");
                     _handleAddNewTodoItem(_todoController.text);
                   },
@@ -114,7 +120,6 @@ class _HomeState extends State<Home> {
         ],
       ),
     );
-
   }
 
   void _handleTodoChange(ToDO todo) {
@@ -123,38 +128,42 @@ class _HomeState extends State<Home> {
     });
   }
 
-  void _handleTodoItemDelete(String id){
+  void _handleTodoItemDelete(String id) {
     setState(() {
       todoList.removeWhere((item) => item.id == id);
     });
   }
 
-  void _handleAddNewTodoItem(String todoText){
+  void _handleAddNewTodoItem(String todoText) {
     setState(() {
-      todoList.add(ToDO(id: DateTime.now().microsecondsSinceEpoch.toString(), todoText: todoText));
+      todoList.add(ToDO(
+          id: DateTime.now().microsecondsSinceEpoch.toString(),
+          todoText: todoText));
     });
     _todoController.clear(); // Clean text field after add
   }
 
-  void _handleTodoFilter(String searchKeyWord){
+  void _handleTodoFilter(String searchKeyWord) {
     List<ToDO> results = [];
-    if(searchKeyWord.isEmpty || searchKeyWord.trim().isEmpty){
+    if (searchKeyWord.isEmpty || searchKeyWord.trim().isEmpty) {
       results = todoList;
-    } else{
-      results = todoList.where((item) => item.todoText!.toLowerCase().contains(searchKeyWord.toLowerCase())).toList();
+    } else {
+      results = todoList
+          .where((item) => item.todoText!
+              .toLowerCase()
+              .contains(searchKeyWord.toLowerCase()))
+          .toList();
     }
     setState(() {
       _foundTodo = results;
     });
   }
 
-  Widget searchBox(){
+  Widget searchBox() {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 15),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20)
-      ),
+          color: Colors.white, borderRadius: BorderRadius.circular(20)),
       child: TextField(
         onChanged: (value) => _handleTodoFilter(value),
         decoration: InputDecoration(
@@ -180,14 +189,12 @@ class _HomeState extends State<Home> {
     return AppBar(
       elevation: 0,
       backgroundColor: tdBGColor,
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
+      title: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         Icon(
           Icons.menu,
           color: tdBlack,
           size: 30,
-          ),
+        ),
         Container(
           height: 40,
           width: 40,
@@ -200,5 +207,3 @@ class _HomeState extends State<Home> {
     );
   }
 }
-
-
